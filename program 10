@@ -1,0 +1,61 @@
+
+import random
+import math
+
+N = 8
+
+def conflicts(board):
+    count = 0
+
+    for i in range(N):
+        for j in range(i + 1, N):
+            if abs(board[i] - board[j]) == abs(i - j):
+                count += 1
+
+    return count
+
+
+def simulated_annealing():
+    board = list(range(N))
+    random.shuffle(board)
+
+    temperature = 100
+    cooling_rate = 0.99
+
+    while temperature > 0.01:
+        if conflicts(board) == 0:
+            return board
+
+        new_board = board[:]
+
+        row1, row2 = random.sample(range(N), 2)
+        new_board[row1], new_board[row2] = (
+            new_board[row2], new_board[row1]
+        )
+
+        delta = conflicts(board) - conflicts(new_board)
+
+        if delta > 0 or random.random() < math.exp(delta / temperature):
+            board = new_board
+
+        temperature *= cooling_rate
+
+    return board if conflicts(board) == 0 else None
+
+
+solution = simulated_annealing()
+
+if solution is not None:
+    print("Final N-Queens Board:")
+
+    for row in range(N):
+        for col in range(N):
+            if solution[row] == col:
+                print("Q", end=" ")
+            else:
+                print(".", end=" ")
+        print()
+
+    print("Conflicts:", conflicts(solution))
+else:
+    print("Solution not found. Run again.")
