@@ -1,0 +1,73 @@
+
+import random
+
+# Distance between cities
+cities = ['A', 'B', 'C', 'D', 'E']
+
+distance = [
+    [0, 10, 15, 20, 25],
+    [10, 0, 35, 25, 30],
+    [15, 35, 0, 30, 20],
+    [20, 25, 30, 0, 15],
+    [25, 30, 20, 15, 0]
+]
+
+population_size = 50
+generations = 200
+
+# Calculate route distance
+def route_distance(route):
+    total = 0
+
+    for i in range(len(route)):
+        a = route[i]
+        b = route[(i + 1) % len(route)]
+        total += distance[a][b]
+
+    return total
+
+
+# Create initial population
+population = [
+    random.sample(range(len(cities)), len(cities))
+    for _ in range(population_size)
+]
+
+
+# Genetic Algorithm
+for generation in range(generations):
+
+    population.sort(key=route_distance)
+
+    new_population = population[:2]
+
+    while len(new_population) < population_size:
+
+        p1, p2 = random.sample(population[:10], 2)
+
+        point = random.randint(1, len(cities) - 1)
+
+        child = p1[:point] + [
+            city for city in p2 if city not in p1[:point]
+        ]
+
+        if random.random() < 0.2:
+            i, j = random.sample(range(len(cities)), 2)
+            child[i], child[j] = child[j], child[i]
+
+        new_population.append(child)
+
+    population = new_population
+
+
+# Best route
+best_route = min(population, key=route_distance)
+
+print("Shortest Route:")
+
+for city in best_route:
+    print(cities[city], end=" -> ")
+
+print(cities[best_route[0]])
+
+print("Minimum Distance:", route_distance(best_route))
