@@ -1,0 +1,27 @@
+
+def f(x):
+    return -(x - 3) ** 2 + 10
+
+def hill_climbing(start):
+    current = start
+
+    print("States visited:")
+
+    while True:
+        print("x =", current, " f(x) =", f(current))
+
+        next_state = current + 1
+        previous_state = current - 1
+
+        if f(previous_state) > f(current):
+            next_state = previous_state
+
+        if f(next_state) <= f(current):
+            break
+
+        current = next_state
+
+    print("\nMaximum value =", f(current))
+    print("Best state =", current)
+
+hill_climbing(0)
