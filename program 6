@@ -1,0 +1,84 @@
+
+import heapq
+
+def misplaced_tiles(state, goal):
+    return sum(1 for i in range(9)
+               if state[i] != 0 and state[i] != goal[i])
+
+
+def get_neighbors(state):
+    neighbors = []
+    zero = state.index(0)
+    row, col = divmod(zero, 3)
+
+    moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    for dr, dc in moves:
+        r, c = row + dr, col + dc
+
+        if 0 <= r < 3 and 0 <= c < 3:
+            new_pos = r * 3 + c
+            new_state = list(state)
+
+            new_state[zero], new_state[new_pos] = (
+                new_state[new_pos], new_state[zero]
+            )
+
+            neighbors.append(tuple(new_state))
+
+    return neighbors
+
+
+def best_first_search(start, goal):
+    pq = []
+    heapq.heappush(pq, (misplaced_tiles(start, goal), start))
+
+    visited = set()
+    parent = {start: None}
+
+    while pq:
+        h, current = heapq.heappop(pq)
+
+        if current in visited:
+            continue
+
+        visited.add(current)
+
+        if current == goal:
+            path = []
+            while current is not None:
+                path.append(current)
+                current = parent[current]
+
+            path.reverse()
+            return path
+
+        for neighbor in get_neighbors(current):
+            if neighbor not in visited and neighbor not in parent:
+                parent[neighbor] = current
+                heapq.heappush(
+                    pq, (misplaced_tiles(neighbor, goal), neighbor)
+                )
+
+    return None
+
+
+start = (1, 2, 3,
+         4, 0, 6,
+         7, 5, 8)
+
+goal = (1, 2, 3,
+        4, 5, 6,
+        7, 8, 0)
+
+solution = best_first_search(start, goal)
+
+if solution:
+    print("Solution found:")
+    for step in solution:
+        for i in range(0, 9, 3):
+            print(step[i:i+3])
+        print()
+    print("Total moves:", len(solution) - 1)
+else:
+    print("Solution not found")
