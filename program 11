@@ -1,0 +1,79 @@
+
+import random
+
+# Items: (weight, value)
+items = [
+    (2, 10),
+    (3, 20),
+    (4, 30),
+    (5, 40),
+    (6, 50)
+]
+
+capacity = 10
+population_size = 10
+generations = 50
+
+def fitness(chromosome):
+    weight = sum(
+        items[i][0] * chromosome[i]
+        for i in range(len(items))
+    )
+
+    value = sum(
+        items[i][1] * chromosome[i]
+        for i in range(len(items))
+    )
+
+    if weight > capacity:
+        return 0
+
+    return value
+
+
+def genetic_algorithm():
+    population = [
+        [random.randint(0, 1) for _ in items]
+        for _ in range(population_size)
+    ]
+
+    for _ in range(generations):
+        population.sort(key=fitness, reverse=True)
+
+        new_population = population[:2]
+
+        while len(new_population) < population_size:
+            p1, p2 = random.sample(population[:5], 2)
+
+            point = random.randint(1, len(items) - 1)
+
+            child = p1[:point] + p2[point:]
+
+            if random.random() < 0.2:
+                pos = random.randint(0, len(items) - 1)
+                child[pos] = 1 - child[pos]
+
+            new_population.append(child)
+
+        population = new_population
+
+    best = max(population, key=fitness)
+    return best
+
+
+best = genetic_algorithm()
+
+print("Selected Items:")
+
+total_weight = 0
+
+for i in range(len(items)):
+    if best[i] == 1:
+        print("Item", i + 1,
+              "Weight:", items[i][0],
+              "Value:", items[i][1])
+
+        total_weight += items[i][0]
+
+print("Total Weight:", total_weight)
+print("Maximum Fitness Value:", fitness(best))
