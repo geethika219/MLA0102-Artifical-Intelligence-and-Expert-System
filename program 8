@@ -1,0 +1,23 @@
+
+% Student marks database
+
+student(arun, 70, 65, 80).
+student(bala, 45, 60, 55).
+student(chitra, 80, 75, 90).
+student(divya, 60, 55, 65).
+
+% Rule for eligible students
+
+eligible(Name) :-
+    student(Name, Math, Physics, CS),
+    Math >= 50,
+    Physics >= 50,
+    CS >= 50,
+    Total is Math + Physics + CS,
+    Total >= 180.
+
+% Rule for not eligible students
+
+not_eligible(Name) :-
+    student(Name, _, _, _),
+    \+ eligible(Name).
