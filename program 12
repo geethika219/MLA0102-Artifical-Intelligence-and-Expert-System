@@ -1,0 +1,51 @@
+
+# AO* Search Algorithm
+
+graph = {
+    'A': [[('B', 1), ('C', 1)], [('D', 1)]],
+    'B': [[('E', 1)]],
+    'C': [[('F', 1)]],
+    'D': [[('G', 1)]],
+    'E': [],
+    'F': [],
+    'G': []
+}
+
+heuristic = {
+    'A': 5,
+    'B': 3,
+    'C': 2,
+    'D': 4,
+    'E': 0,
+    'F': 0,
+    'G': 0
+}
+
+def ao_star(node):
+    if not graph[node]:
+        return heuristic[node], [node]
+
+    best_cost = float('inf')
+    best_path = []
+
+    for children in graph[node]:
+        cost = 0
+        path = [node]
+        valid = True
+
+        for child, edge_cost in children:
+            child_cost, child_path = ao_star(child)
+            cost += edge_cost + child_cost
+            path.extend(child_path)
+
+        if cost < best_cost:
+            best_cost = cost
+            best_path = path
+
+    return best_cost, best_path
+
+
+cost, path = ao_star('A')
+
+print("Optimal Solution Path:", path)
+print("Minimum Cost:", cost)
