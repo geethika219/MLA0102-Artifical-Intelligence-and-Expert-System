@@ -1,0 +1,31 @@
+
+% Book database
+book(python_basics).
+book(data_science).
+book(machine_learning).
+book(java_programming).
+
+% Author facts
+author(python_basics, guido).
+author(data_science, john).
+author(machine_learning, tom).
+author(java_programming, james).
+
+% Availability facts
+available(python_basics).
+available(machine_learning).
+available(java_programming).
+
+% Rule to find author of a book
+book_author(Book, Author) :-
+    author(Book, Author).
+
+% Rule to check book availability
+check_availability(Book) :-
+    available(Book),
+    write('Book is Available').
+
+check_availability(Book) :-
+    book(Book),
+    \+ available(Book),
+    write('Book is Not Available').
