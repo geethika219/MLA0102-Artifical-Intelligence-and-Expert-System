@@ -1,0 +1,37 @@
+
+def dls(graph, node, goal, depth, path):
+    if node == goal:
+        print("Path:", " -> ".join(path + [node]))
+        return True
+
+    if depth <= 0:
+        return False
+
+    for neighbour in graph[node]:
+        if neighbour not in path:
+            if dls(graph, neighbour, goal, depth - 1,
+                   path + [node]):
+                return True
+
+    return False
+
+
+def iddfs(graph, start, goal, max_depth):
+    for depth in range(max_depth + 1):
+        print("Depth:", depth)
+        if dls(graph, start, goal, depth, []):
+            return
+    print("Goal not found")
+
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F', 'G'],
+    'D': [],
+    'E': [],
+    'F': [],
+    'G': []
+}
+
+iddfs(graph, 'A', 'G', 5)
